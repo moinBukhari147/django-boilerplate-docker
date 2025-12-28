@@ -1,0 +1,10 @@
+{
+	"recommendations": [
+		"charliermarsh.ruff",
+		"ms-python.python",
+		"batisteo.vscode-django",
+		"astral-sh.uv",
+		"eamodio.gitlens",
+		"usernamehw.errorlens"
+	]
+}

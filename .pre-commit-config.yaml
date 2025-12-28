@@ -1,0 +1,22 @@
+repos:
+    # 1️⃣ Ruff (handles Python linting + formatting + imports)
+    - repo: https://github.com/astral-sh/ruff-pre-commit
+      rev: v0.14.0 # ✅ Latest (Oct 2025)
+      hooks:
+          # Linter + auto-fix (lint issues only)
+          - id: ruff-check
+            args: [--fix]
+          # Formatter (after fixes)
+          - id: ruff-format
+            # Optional: skip Jupyter notebooks
+            types_or: [python, pyi]
+
+    # 2️⃣ General file checks (YAML, TOML, JSON, whitespace)
+    - repo: https://github.com/pre-commit/pre-commit-hooks
+      rev: v4.6.0
+      hooks:
+          - id: trailing-whitespace
+          - id: end-of-file-fixer
+          - id: check-yaml
+          - id: check-toml
+          - id: check-json

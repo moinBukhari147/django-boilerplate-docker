@@ -1,0 +1,13 @@
+{
+	"python.linting.enabled": true,
+	"python.linting.ruffEnabled": true,
+	"python.linting.ruffPath": "uv run ruff",
+	"editor.formatOnSave": true,
+	"[python]": {
+		"editor.defaultFormatter": "charliermarsh.ruff",
+		"editor.formatOnSave": true,
+		"editor.codeActionsOnSave": {
+			"source.organizeImports": true
+		}
+	}
+}
