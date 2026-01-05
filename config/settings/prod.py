@@ -5,12 +5,19 @@ from .base import *
 
 DEBUG = False
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
-
 DATABASES["default"] = dj_database_url.config(
     conn_max_age=600,
     ssl_require=True,
 )
+
+# -------------------------------------------------------------------
+# Cors
+# -------------------------------------------------------------------
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
+CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS", default=[])
+CORS_ALLOW_CREDENTIALS = True
+CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[])
+
 
 # -------------------------------------------------------------------
 # Security

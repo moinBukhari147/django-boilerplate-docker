@@ -1,12 +1,20 @@
-import os
 from pathlib import Path
+
+import environ
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 # -------------------------------------------------------------------
+# Environment
+# -------------------------------------------------------------------
+env = environ.Env()
+environ.Env.read_env(BASE_DIR / ".env")
+SECRET_KEY = env("SECRET_KEY")
+
+
+# -------------------------------------------------------------------
 # Core
 # -------------------------------------------------------------------
-SECRET_KEY = os.getenv("SECRET_KEY", "unsafe-dev-secret")
 
 DEBUG = False
 
@@ -22,9 +30,11 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -93,4 +103,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Email
 # ------------------------------------------------------------------
 
-EMAIL_BACKEND = os.getenv("EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
+EMAIL_BACKEND = env(
+    "EMAIL_BACKEND",
+    default="django.core.mail.backends.console.EmailBackend",
+)
