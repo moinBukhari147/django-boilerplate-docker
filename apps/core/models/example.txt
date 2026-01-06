@@ -1,0 +1,23 @@
+from django.db import models
+from apps.core.models.base import TimeStampedSoftDeleteModel
+
+class ExampleModel(TimeStampedSoftDeleteModel):
+    """
+    Simple example model to demonstrate fields and admin metadata.
+    """
+
+    # Fields
+    name = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+    is_active = models.BooleanField(default=True)
+    quantity = models.IntegerField(default=0)
+
+    # Admin metadata for dynamic registration
+    admin_list_display = ["id", "name", "description", "is_active", "quantity", "created_at", "updated_at"]
+    admin_search_fields = ["name", "description"]
+    admin_list_filter = ["is_active"]
+    admin_ordering = ["-created_at"]
+    admin_readonly_fields = ["id", "created_at", "updated_at"]
+
+    def __str__(self):
+        return self.name
