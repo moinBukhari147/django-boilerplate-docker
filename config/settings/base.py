@@ -9,16 +9,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 # -------------------------------------------------------------------
 env = environ.Env()
 environ.Env.read_env(BASE_DIR / ".env")
+
+DEBUG = env.bool("DEBUG", default=True)
 SECRET_KEY = env("SECRET_KEY")
 
-
-# -------------------------------------------------------------------
-# Core
-# -------------------------------------------------------------------
-
-DEBUG = False
-
-ALLOWED_HOSTS: list[str] = []
 
 # -------------------------------------------------------------------
 # Applications
@@ -64,7 +58,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "config.wsgi.application"
+# WSGI_APPLICATION = "config.wsgi.application"
 ASGI_APPLICATION = "config.asgi.application"
 
 # -------------------------------------------------------------------
@@ -95,6 +89,7 @@ USE_TZ = True
 # -------------------------------------------------------------------
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_DIRS = [BASE_DIR / "static"]
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
@@ -109,3 +104,14 @@ EMAIL_BACKEND = env(
     "EMAIL_BACKEND",
     default="django.core.mail.backends.console.EmailBackend",
 )
+
+# ------------------------------------------------------------------
+# Celery Configuration
+# ------------------------------------------------------------------
+
+CELERY_BROKER_URL = "redis://localhost:6379/0"
+CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
+CELERY_TIMEZONE = "Asia/Karachi"

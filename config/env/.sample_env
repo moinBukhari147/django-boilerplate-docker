@@ -2,24 +2,50 @@
 # Core
 # ------------------------------------------------------------------
 DJANGO_ENV=dev
-SECRET_KEY=django-insecure-change-me
+SECRET_KEY=django-insecure-change-me-for-production
+PROJECT=boilerplate
 
 # ------------------------------------------------------------------
 # Allowed Hosts
 # ------------------------------------------------------------------
 ALLOWED_HOSTS=localhost,127.0.0.1
+CORS_ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
 
 # ------------------------------------------------------------------
-# Database Url
+# Database (LOCAL DEVELOPMENT - matching your logs)
 # ------------------------------------------------------------------
-DATABASE_URL=postgres://postgres:postgres@localhost:5432/test_db
+DATABASE_URL=postgres://postgres:M0in@postgres@localhost:5432/testdb
+
+# Individual DB vars (for Docker reference)
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=M0in@postgres
+POSTGRES_DB=testdb
+POSTGRES_HOST=localhost
+POSTGRES_PORT=5432
 
 # ------------------------------------------------------------------
 # Security
 # ------------------------------------------------------------------
-CSRF_TRUSTED_ORIGINS=http://localhost,http://127.0.0.1
+DEBUG=True
+CSRF_TRUSTED_ORIGINS=http://localhost:8000,http://127.0.0.1:8000,https://*.ngrok-free.app
 
 # ------------------------------------------------------------------
 # Email
 # ------------------------------------------------------------------
 EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend
+
+# ------------------------------------------------------------------
+# Celery (LOCAL DEVELOPMENT)
+# ------------------------------------------------------------------
+CELERY_BROKER_URL=redis://localhost:6379/0
+CELERY_RESULT_BACKEND=redis://localhost:6379/0
+
+# Docker versions (commented out for local dev)
+# CELERY_BROKER_URL=redis://redis:6379/0
+# CELERY_RESULT_BACKEND=redis://redis:6379/0
+
+# ------------------------------------------------------------------
+# Flower
+# ------------------------------------------------------------------
+FLOWER_USER=moin
+FLOWER_PASS=admin@1234

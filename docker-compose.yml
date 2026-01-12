@@ -1,0 +1,115 @@
+##############################
+# Reusable blocks
+##############################
+x-common: &common
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
+    env_file:
+        - .env
+
+x-django-build: &django-build
+    build:
+        context: .
+        args:
+            DJANGO_ENV: ${DJANGO_ENV:-dev}
+    volumes:
+        - .:/app
+        - boilerplate_static_volume:/app/static
+        - boilerplate_media_volume:/app/media
+
+##############################
+# Services
+##############################
+services:
+    postgres:
+        image: postgres:latest
+        container_name: ${PROJECT}_postgres
+        environment:
+            POSTGRES_USER: ${POSTGRES_USER}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+            POSTGRES_DB: ${POSTGRES_DB}
+        volumes:
+            - boilerplate_postgres_data:/var/lib/postgresql
+        ports:
+            - "5432:5432"
+        <<: *common
+        healthcheck:
+            test:
+                ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+            interval: 60s
+            timeout: 10s
+            retries: 5
+
+    django:
+        <<: [*django-build, *common]
+        container_name: ${PROJECT}_django
+        command: uv run uvicorn config.asgi:application --host 0.0.0.0 --port 8000 --reload --reload-dir /app
+
+        ports:
+            - "8000:8000"
+        depends_on:
+            - redis
+            - postgres
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost:8000/health/"]
+            interval: 60s
+            timeout: 10s
+            retries: 3
+            start_period: 5s
+
+    celery:
+        <<: [*django-build, *common]
+        container_name: ${PROJECT}_celery
+        command: bash -c "uv run celery -A config worker -l info"
+        depends_on:
+            - django
+            - redis
+        healthcheck:
+            test: ["CMD", "redis-cli", "ping"]
+            interval: 60s
+            timeout: 10s
+            retries: 5
+
+    # celery_beat:
+    #     <<: [*django-build, *common]
+    #     container_name: ${PROJECT}_celery_beat
+    #     command: bash -c "celery -A config beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler"
+    #     depends_on:
+    #         - django
+    #         - redis
+
+    flower:
+        <<: [*django-build, *common]
+        container_name: ${PROJECT}_flower
+        command: bash -c "sleep 5 && uv run celery -A config flower --port=5555 --basic_auth=${FLOWER_USER}:${FLOWER_PASS}"
+        ports:
+            - "5555:5555"
+        depends_on:
+            celery:
+                condition: service_started
+            redis:
+                condition: service_started
+
+    redis:
+        image: redis:7-alpine
+        container_name: ${PROJECT}_redis
+        ports:
+            - "6379:6379"
+        volumes:
+            - boilerplate_redis_data:/data
+        <<: *common
+        healthcheck:
+            test: ["CMD", "redis-cli", "ping"]
+            interval: 30s
+            timeout: 10s
+            retries: 5
+
+##############################
+# Volumes
+##############################
+volumes:
+    boilerplate_static_volume:
+    boilerplate_media_volume:
+    boilerplate_redis_data:
+    boilerplate_postgres_data:
