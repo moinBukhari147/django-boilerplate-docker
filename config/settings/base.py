@@ -115,3 +115,17 @@ CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_TIMEZONE = "Asia/Karachi"
+
+# ------------------------------------------------------------------
+# Celery Configuration
+# ------------------------------------------------------------------
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+    "DEFAULT_RENDERER_CLASSES": [
+        "apps.core.renderer.SuccessJSONRenderer",
+    ],
+    "EXCEPTION_HANDLER": "apps.core.exception.custom_exception_handler",
+}
