@@ -23,7 +23,7 @@ x-django-build: &django-build
 ##############################
 services:
     postgres:
-        image: postgres:latest
+        image: postgres:18-alpine
         container_name: ${PROJECT}_postgres
         environment:
             POSTGRES_USER: ${POSTGRES_USER}
