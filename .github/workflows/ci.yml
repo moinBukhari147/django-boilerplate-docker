@@ -56,6 +56,14 @@ jobs:
                   uv venv
                   uv sync --frozen
 
+            - name: Load environment from .env if exists
+              run: |
+                  if [ -f ".env" ]; then
+                    echo "Loading .env..."
+                    export $(grep -v '^#' .env | xargs)
+                  fi
+              shell: bash
+
             - name: Run pre-commit (Ruff Auto Fix + Format Check)
               uses: pre-commit/action@v3.0.1
 
