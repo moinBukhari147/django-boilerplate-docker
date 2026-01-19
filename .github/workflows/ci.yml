@@ -15,7 +15,7 @@ env:
     PYTHONDONTWRITEBYTECODE: "1"
     DJANGO_ENV: dev
     DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres_db
-    SECRECT_KEY: dummy_secret_key_for_ci
+    SECRET_KEY: dummy_secret_key_for_ci
 jobs:
     test:
         runs-on: ubuntu-latest
