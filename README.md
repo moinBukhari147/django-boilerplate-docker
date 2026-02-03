@@ -357,6 +357,3 @@ make psql        # postgres shell
 make rediscli    # redis cli
 ```
 
----
-
-## 🧠 Recommended Workflow
