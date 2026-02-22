@@ -227,16 +227,16 @@ Set a specific Python version for the project using **uv**:
 
 ```bash
 # List available versions
-uv list
+uv python list
 
 # Install a specific version
-uv install 3.11.9
+uv python install 3.11.9
 
 # Use it for the project
-uv use 3.11.9
+uv python pin 3.11.9
 
 # Install the latest Python version available
-uv install latest
+uv python install
 
 # Use it for the project
 uv use latest
@@ -262,6 +262,27 @@ If `pyproject.toml` changes:
 uv lock
 uv sync
 ```
+
+Upgrade all dependencies to the latest stable versions:
+
+```bash
+uv lock --upgrade
+uv sync
+```
+- Updates uv.lock with the latest stable versions
+- Respects version constraints in pyproject.toml
+- Requires review + testing before commit
+
+
+Upgrade a specific dependency:
+
+```bash
+uv lock --upgrade django
+uv sync
+```
+- Updates uv.lock with the latest stable versions
+- Respects version constraints in pyproject.toml
+- Requires review + testing before commit
 
 ---
 
@@ -356,4 +377,5 @@ make prune       # docker cleanup
 make psql        # postgres shell
 make rediscli    # redis cli
 ```
+
 
