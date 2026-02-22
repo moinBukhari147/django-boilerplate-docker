@@ -15,8 +15,8 @@ x-django-build: &django-build
             DJANGO_ENV: ${DJANGO_ENV:-dev}
     volumes:
         - .:/app
-        - boilerplate_static_volume:/app/static
-        - boilerplate_media_volume:/app/media
+        - ${PROJECT}_static_volume:/app/static
+        - ${PROJECT}_media_volume:/app/media
 
 ##############################
 # Services
@@ -30,9 +30,9 @@ services:
             POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
             POSTGRES_DB: ${POSTGRES_DB}
         volumes:
-            - boilerplate_postgres_data:/var/lib/postgresql
+            - ${PROJECT}_postgres_data:/var/lib/postgresql
         ports:
-            - "5432:5432"
+            - "${POSTGRES_PORT}:5432"
         <<: *common
         healthcheck:
             test:
@@ -44,10 +44,10 @@ services:
     django:
         <<: [*django-build, *common]
         container_name: ${PROJECT}_django
-        command: uv run uvicorn config.asgi:application --host 0.0.0.0 --port 8000 --reload --reload-dir /app
+        command: uvicorn config.asgi:application --host 0.0.0.0 --port 8000 --reload --reload-dir /app
 
         ports:
-            - "8000:8000"
+            - "${PORT}:8000"
         depends_on:
             - redis
             - postgres
@@ -61,7 +61,7 @@ services:
     celery:
         <<: [*django-build, *common]
         container_name: ${PROJECT}_celery
-        command: bash -c "uv run celery -A config worker -l info"
+        command: celery -A config worker -l info
         depends_on:
             - django
             - redis
@@ -82,7 +82,7 @@ services:
     flower:
         <<: [*django-build, *common]
         container_name: ${PROJECT}_flower
-        command: bash -c "sleep 5 && uv run celery -A config flower --port=5555 --basic_auth=${FLOWER_USER}:${FLOWER_PASS}"
+        command: sleep 5 && celery -A config flower --port=5555 --basic_auth=${FLOWER_USER}:${FLOWER_PASS}
         ports:
             - "5555:5555"
         depends_on:
@@ -97,7 +97,7 @@ services:
         ports:
             - "6379:6379"
         volumes:
-            - boilerplate_redis_data:/data
+            - ${PROJECT}_redis_data:/data
         <<: *common
         healthcheck:
             test: ["CMD", "redis-cli", "ping"]

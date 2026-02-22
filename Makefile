@@ -1,3 +1,4 @@
+
 SHELL=/bin/bash
 
 dc := docker compose
@@ -8,6 +9,9 @@ build:
 	@$(dc) build
 
 up:
+	@$(dc) up
+
+up.d:
 	@$(dc) up -d
 	@echo "$(success)"
 
@@ -38,19 +42,25 @@ dcshell:
 	@$(dc) exec django /bin/bash
 
 sp:
-	@$(dc) exec django uv run python manage.py shell_plus
+	@$(dc) exec django python manage.py shell_plus
 
 makemigrations:
-	@$(dc) exec django uv run python manage.py makemigrations
+	@$(dc) exec django python manage.py makemigrations
 
 migrate:
-	@$(dc) exec django uv run python manage.py migrate
+	@$(dc) exec django python manage.py migrate
 
 collectstatic:
-	@$(dc) exec django uv run python manage.py collectstatic --noinput
+	@$(dc) exec django python manage.py collectstatic --noinput
+
+showmigrations:
+	@$(dc) exec django python manage.py showmigrations $(APP)
 
 createsuperuser:
-	@$(dc) exec django uv run python manage.py createsuperuser
+	@$(dc) exec django python manage.py createsuperuser
+
+createapp:
+	@$(dc) exec django python manage.py startapp $(APP)
 
 # ------------------------
 # Celery commands
