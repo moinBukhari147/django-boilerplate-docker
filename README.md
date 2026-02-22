@@ -321,7 +321,7 @@ make up
 
 ### 🐳 Docker Python Version
 
-The Dockerfile uses a specific Python base image.  
+The Dockerfile uses a specific Python base image.
 If you change the Python version for local development with `uv`, update the `FROM` line in the Dockerfile to match:
 
 ```dockerfile
@@ -377,5 +377,3 @@ make prune       # docker cleanup
 make psql        # postgres shell
 make rediscli    # redis cli
 ```
-
-
